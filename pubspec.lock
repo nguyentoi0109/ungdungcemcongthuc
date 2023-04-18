@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  autocomplete_textfield:
+    dependency: "direct main"
+    description:
+      name: autocomplete_textfield
+      sha256: a5d39ac71251af62f26a8d7062f46cb9f69582d4b6866a199becec0b452f943d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.9.0"
   boolean_selector:
     dependency: transitive
     description:

@@ -1,11 +1,12 @@
 import 'dart:convert';
 
-import 'package:app/DatabaseHandler/DataManager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../Comm/constants.dart';
+import '../DatabaseHandler/DataManager.dart';
 import '../Model/Product.dart';
+import 'DetailPage.dart';
 import 'ProductWidget.dart';
 
 class FavouitePage extends StatefulWidget {
@@ -19,34 +20,30 @@ class FavouitePage extends StatefulWidget {
 
 class _FavouitePageState extends State<FavouitePage> {
   List<Product> favProduct = [];
-  List<Product> list = [];
+  final scrollController = ScrollController();
+  int page = 0;
+  bool isLoadingMore = false;
 
-  Future getAllData() async {
-    var url = serverUrl + "/banhang/getAllData.php";
-    var res = await http.get(Uri.parse(url));
-    if (res.statusCode == 200) {
-      Iterable l = json.decode(res.body);
-      List<Product> posts =
-          List<Product>.from(l.map((model) => Product.fromJson(model)));
-      setState(() {
-        list.addAll(posts);
-      });
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    getAllData();
+    favProduct = DataManager().favProducts;
   }
-
-  void getFavProduct() {
-    for(int i = 0; i< list.length; i++) {
-        if(DataManager().checkFavourite(list[i].id)){
-          favProduct.add(list[i]);
-        }
-    }
-  }
+  // Future<void> _scrollLitener() async {
+  //   if (isLoadingMore) return;
+  //   if (scrollController.position.pixels ==
+  //       scrollController.position.maxScrollExtent) {
+  //     setState(() {
+  //       isLoadingMore = true;
+  //     });
+  //     page = page + 1;
+  //     await getAllData();
+  //     setState(() {
+  //       isLoadingMore = false;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -55,20 +52,24 @@ class _FavouitePageState extends State<FavouitePage> {
         padding: const EdgeInsets.all(0),
         child: Column(
           children: [
-            // TextField(
-            //   onChanged: (value) => _runFilter(value),
-            //   decoration: InputDecoration(
-            //       labelText: 'Search', suffixIcon: Icon(Icons.search)),
-            // ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
             Expanded(
               child: ListView.builder(
+                  // controller: scrollController,
                   itemCount: favProduct.length,
                   itemBuilder: (context, index) {
-                    var product = favProduct[index];
-                    return ProductWidget(product: product);
+                      var product = favProduct[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => DetailForm(
+                                        cate: favProduct[index],
+                                      )));
+                        },
+                        child: ProductWidget(product: product),
+                      );
+                      // ProductWidget(product: product);
                   }),
             ),
           ],

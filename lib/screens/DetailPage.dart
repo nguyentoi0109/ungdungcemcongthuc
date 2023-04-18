@@ -1,7 +1,9 @@
+import 'package:app/Model/Product.dart';
 import 'package:flutter/material.dart';
 
 class DetailForm extends StatefulWidget {
-  const DetailForm({Key? key}) : super(key: key);
+  Product cate;
+  DetailForm({Key? key, required this.cate}) : super(key: key);
 
   @override
   State<DetailForm> createState() => _DetailFormState();

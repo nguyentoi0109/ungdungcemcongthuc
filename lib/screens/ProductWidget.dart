@@ -17,71 +17,66 @@ class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
     var isFav = DataManager().checkFavourite(widget.product.id);
-    return ListTile(
-        // onTap: () {
-        //   Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (_) =>
-        //               DetailForm(id: _foundUser[index].id)));
-        // },
-        title: Container(
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.black12, borderRadius: BorderRadius.circular(5)),
-        padding: const EdgeInsets.all(1.0),
+    return Container(
+      decoration: BoxDecoration(color: Colors.black12,borderRadius: BorderRadius.circular(8.0)),
+        margin: EdgeInsets.all(3.0),
         child: Row(
-            // crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 3),
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    child: Container(
-                      height: 100.0,
-                      width: 100.0,
-                      child: Image.network(
-                        "${widget.product.hinhanh}",
-                        fit: BoxFit.cover,
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: SizedBox(
+                height: 90.0,
+                width: 90.0,
+                child: Image.network(
+                  "${widget.product.hinhanh}",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 5),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "${widget.product.tensp}",
+                        style: TextStyle(fontSize: 20),
+                        maxLines: 1,
                       ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 5),
-              Expanded(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-                  Container(
-                    child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "${widget.product.tensp}",
-                          style: TextStyle(fontSize: 20),
-                        )),
+                  SizedBox(
+                    height: 5,
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 5),
                     child: Text(
                       "${widget.product.mota}",
+                      style: TextStyle(fontSize: 15),
                       maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ]),
+                ],
               ),
-              StarButton(isStarred: isFav, valueChanged: _onFavChange),
-            ]),
-      ),
-    ));
+            ),
+          ),
+          StarButton(isStarred: isFav, valueChanged: _onFavChange),
+        ]));
   }
 
-  void _onFavChange(bool fav) async{
-    print('_onFavChange ${widget.product.id} -> $fav');
+  void _onFavChange(bool fav) async {
+    // print('_onFavChange ${widget.product.id} -> $fav');
     if (fav) {
-     await DataManager().addFavourite(widget.product.id);
+      await DataManager().addFavourite(widget.product);
     } else {
-     await DataManager().removeFavourite(widget.product.id);
+      await DataManager().removeFavourite(widget.product.id);
     }
     setState(() {});
   }

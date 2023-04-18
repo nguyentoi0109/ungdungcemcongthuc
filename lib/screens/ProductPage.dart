@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/screens/DetailPage.dart';
 import 'package:app/screens/ProductWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,13 +17,12 @@ class ProductPage extends StatefulWidget {
 
 class _ProductPageState extends State<ProductPage> {
   List<Product> list = [];
-  List<Product> _foundProduct = [];
   final scrollController = ScrollController();
-  int page = 1;
+  int page = 0;
   bool isLoadingMore = false;
 
   Future<void> getDataByType() async {
-    var url = serverUrl + "/banhang/getAllData.php";
+    var url = serverUrl + "/banhang/getAllData.php?page=$page";
     var res = await http.get(Uri.parse(url));
     if (res.statusCode == 200) {
       Iterable l = json.decode(res.body);
@@ -37,24 +37,8 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    _foundProduct = list;
     scrollController.addListener(_scrollLitener);
     getDataByType();
-  }
-
-  void _runFilter(String enterKey) {
-    List<Product> result = [];
-    if (enterKey.isEmpty) {
-      result = _foundProduct;
-    } else {
-      result = list
-          .where((product) =>
-              product.tensp.toLowerCase().contains(enterKey.toLowerCase()))
-          .toList();
-    }
-    setState(() {
-      _foundProduct = result;
-    });
   }
 
   Future<void> _scrollLitener() async {
@@ -75,37 +59,87 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(0),
-        child: Column(
-          children: [
-            TextField(
-              onChanged: (value) => _runFilter(value),
-              decoration: InputDecoration(
-                  labelText: 'Search', suffixIcon: Icon(Icons.search)),
+      body: Column(
+        children: [
+          Autocomplete<Product>(
+            optionsBuilder: (TextEditingValue textValue) {
+              if (textValue.text.isEmpty) {
+                return List.empty();
+              }
+              return list
+                  .where((product) => product.tensp
+                      .toLowerCase()
+                      .contains(textValue.text.toLowerCase()))
+                  .toList();
+            },
+            displayStringForOption: (Product p) => p.tensp,
+            fieldViewBuilder:
+                (context, textEditingController, focusNode, onFieldSubmitted) =>
+                    Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: TextField(
+                controller: textEditingController,
+                focusNode: focusNode,
+                decoration: InputDecoration(
+                  hintText: "Search",
+                  suffixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0)),
+                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Expanded(
-              child: ListView.builder(
-                  controller: scrollController,
-                  itemCount: isLoadingMore
-                      ? _foundProduct.length + 1
-                      : _foundProduct.length,
-                  itemBuilder: (context, index) {
-                    if (index < _foundProduct.length) {
-                      var product = _foundProduct[index];
-                      return ProductWidget(product: product);
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
-            ),
-          ],
-        ),
+            optionsViewBuilder: (BuildContext context, Function onSelected,
+                Iterable<Product> list) {
+              return Material(
+                child: Expanded(
+                  child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: isLoadingMore ? list.length + 1 : list.length,
+                      itemBuilder: (context, index) {
+                        if (index < list.length) {
+                          var product = list.elementAt(index);
+                          return InkWell(
+                            child: ProductWidget(product: product),
+                          );
+                          // ProductWidget(product: product);
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      }),
+                ),
+              );
+            },
+          ),
+          Expanded(
+            child: ListView.builder(
+                controller: scrollController,
+                itemCount: isLoadingMore ? list.length + 1 : list.length,
+                itemBuilder: (context, index) {
+                  if (index < list.length) {
+                    var product = list[index];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => DetailForm(
+                                      cate: list[index],
+                                    )));
+                      },
+                      child: ProductWidget(product: product),
+                    );
+                    // ProductWidget(product: product);
+                  } else {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
+          ),
+        ],
       ),
     );
   }

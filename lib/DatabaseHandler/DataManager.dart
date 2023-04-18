@@ -1,6 +1,8 @@
-import 'dart:developer';
+import 'dart:convert';
+import 'dart:io';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:app/Model/Product.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DataManager {
   static final DataManager _singleton = DataManager._internal();
@@ -11,46 +13,67 @@ class DataManager {
 
   DataManager._internal();
 
-  late List<int> favProducts;
+  late List<Product> favProducts;
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/favProduct.txt');
+  }
 
   Future<void> saveFavProducts() async {
-    List<String> listFav = <String>[];
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    for (int i = 0; i < favProducts.length; i++) {
-      listFav.add(favProducts[i].toString());
+    try {
+      final file = await _localFile;
+
+      String l = jsonEncode(favProducts);
+
+      // Write the file
+      file.writeAsString('$l');
+      print("them thanh cong");
+    } catch (e) {
+      print(e);
     }
-    await prefs.setStringList('favourite', listFav);
   }
 
   Future<void> loadFavProducts() async {
-    favProducts = <int>[];
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String>? list = prefs.getStringList('favourite');
-    if (list != null) {
-      for (int i = 0; i < list.length; i++) {
-        favProducts.add(int.parse(list[i]));
-      }
+    favProducts = <Product>[];
+    try {
+      print("bat dau load");
+      final file = await _localFile;
+
+      // Read the file
+      final contents = await file.readAsString();
+
+
+      Iterable l = json.decode(contents);
+      List<Product> posts =
+          List<Product>.from(l.map((model) => Product.fromJson(model)));
+      favProducts.addAll(posts);
+      print("load thanh cong ${favProducts.length}");
+    } catch (e) {
+      print(e);
     }
   }
 
   bool checkFavourite(int id) {
-    if (favProducts.contains(id)) {
-      return true;
-    }
-    return false;
+    return favProducts.any((element) => element.id == id);
   }
 
   Future<void> removeFavourite(int id) async {
-    favProducts.remove(id);
+    favProducts.removeWhere((x) => x.id == id);
     await saveFavProducts();
-    print('removeFavourite $favProducts' );
+    // print('removeFavourite $favProducts');
   }
 
-  Future<void> addFavourite(int id) async {
-    if (!favProducts.contains(id)) {
-      favProducts.add(id);
+  Future<void> addFavourite(Product p) async {
+    if (!checkFavourite(p.id)) {
+      favProducts.add(p);
       await saveFavProducts();
-      print('addFavourite $favProducts' );
+      // print('addFavourite $favProducts');
     }
   }
 

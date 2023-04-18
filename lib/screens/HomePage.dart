@@ -1,30 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:screen_loader/screen_loader.dart';
 
 import '../Comm/constants.dart';
+import '../Model/CategoryModel.dart';
 import 'ProductForm.dart';
 
-class CategoryModel {
-  int id;
-  String name;
-  String image;
-
-  CategoryModel(this.id, this.name, this.image);
-
-  CategoryModel.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        image = json['image'],
-        id = int.parse(json['id']);
-
-  Map<String, dynamic> toJson() => {
-        'name': name,
-        'image': image,
-        'id': id,
-      };
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

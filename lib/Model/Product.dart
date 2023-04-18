@@ -15,10 +15,10 @@ class Product {
         loai = int.parse(json['loai']);
 
   Map<String, dynamic> toJson() => {
-    'id': id,
+    'id': id.toString(),
     'tensp': tensp,
     'hinhanh': hinhanh,
     'mota': mota,
-    'loai': loai
+    'loai': loai.toString()
   };
 }
