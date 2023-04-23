@@ -45,6 +45,7 @@ dependencies:
   shared_preferences:
   screen_loader: ^4.0.1
   autocomplete_textfield: ^1.7.3
+  mysql1:
 
 
 dev_dependencies:

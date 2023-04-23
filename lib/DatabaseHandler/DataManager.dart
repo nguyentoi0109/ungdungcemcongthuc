@@ -33,7 +33,7 @@ class DataManager {
 
       // Write the file
       file.writeAsString('$l');
-      print("them thanh cong");
+      // print("them thanh cong");
     } catch (e) {
       print(e);
     }
@@ -42,7 +42,7 @@ class DataManager {
   Future<void> loadFavProducts() async {
     favProducts = <Product>[];
     try {
-      print("bat dau load");
+      // print("bat dau load");
       final file = await _localFile;
 
       // Read the file
@@ -53,7 +53,7 @@ class DataManager {
       List<Product> posts =
           List<Product>.from(l.map((model) => Product.fromJson(model)));
       favProducts.addAll(posts);
-      print("load thanh cong ${favProducts.length}");
+      // print("load thanh cong ${favProducts.length}");
     } catch (e) {
       print(e);
     }

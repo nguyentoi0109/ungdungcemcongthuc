@@ -1,5 +1,6 @@
+import 'package:app/DatabaseHandler/UserPreferences.dart';
+import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
-import 'package:screen_loader/screen_loader.dart';
 
 import 'FavouritePage.dart';
 import 'HomePage.dart';
@@ -15,11 +16,7 @@ class HomeForm extends StatefulWidget {
 class _HomeFormState extends State<HomeForm> {
   int _selectedIndex = 0;
   var _pageController = PageController();
-  List<Widget> pages = [
-    HomePage(),
-    ProductPage(),
-    FavouitePage()
-  ];
+  List<Widget> pages = [HomePage(), ProductPage(), FavouitePage()];
 
   @override
   void initState() {
@@ -31,6 +28,41 @@ class _HomeFormState extends State<HomeForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
+        actions: [
+          FutureBuilder<bool>(
+            future: islogged(),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              if (snapshot.hasData && snapshot.data!) {
+                // Nếu có tài khoản đăng nhập
+                return IconButton(
+                  onPressed: () async {
+                    final prefs = await UserPreferences.removeCredentials();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => HomeForm()),
+                        (Route<dynamic> route) => false);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Đã đăng xuất!'),
+                    ));
+                  },
+                  icon: Icon(Icons.logout),
+                );
+              } else {
+                // Nếu không có tài khoản đăng nhập
+                return IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => LoginFrom()),
+                        (Route<dynamic> route) => false);
+                    // Chuyển đến màn hình đăng nhập
+                  },
+                  icon: Icon(Icons.login),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: pages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -58,5 +90,13 @@ class _HomeFormState extends State<HomeForm> {
         },
       ),
     );
+  }
+
+  Future<bool> islogged() async {
+    bool isLog = await UserPreferences.checkCredentials();
+    if (isLog) {
+      return true;
+    }
+    return false;
   }
 }

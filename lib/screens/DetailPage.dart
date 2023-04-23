@@ -1,8 +1,14 @@
+import 'package:app/DatabaseHandler/UserPreferences.dart';
 import 'package:app/Model/Product.dart';
+import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
+
+import '../Comm/constants.dart';
 
 class DetailForm extends StatefulWidget {
   Product cate;
+
   DetailForm({Key? key, required this.cate}) : super(key: key);
 
   @override
@@ -10,6 +16,20 @@ class DetailForm extends StatefulWidget {
 }
 
 class _DetailFormState extends State<DetailForm> {
+  final title = TextEditingController();
+
+  Future<MySqlConnection> _openConnection() async {
+    final conn = await MySqlConnection.connect(
+      ConnectionSettings(
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        db: 'databanhang',
+      ),
+    );
+    return conn;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,9 +190,52 @@ class _DetailFormState extends State<DetailForm> {
                     ),
                   ),
                 ),
+                Column(
+                  children: [
+                    Container(
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Bình luận: ",
+                            style: TextStyle(fontSize: 25),
+                          )),
+                    ),
+                    Container(
+                      child: TextField(
+                        controller: title,
+                        decoration: InputDecoration(hintText: "Viết bình luận"),
+                      ),
+                    )
+                  ],
+                ),
+                ElevatedButton(
+                  onPressed: checkLogin,
+                  child: Text('Đăng bình luận'),
+                )
               ],
             ),
           )),
         ));
+  }
+
+  Future<void> checkLogin() async {
+    final bool checkCredentials = await UserPreferences.checkCredentials();
+    if (checkCredentials) {
+      final comment = title.text.trim();
+      if (comment.isNotEmpty) {
+        final conn = await _openConnection();
+        await conn.query(
+          'INSERT INTO binhluan (title) VALUES (?)',
+          [comment],
+        );
+        await conn.close();
+        title.clear();
+      }
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => LoginFrom()),
+          (Route<dynamic> route) => false);
+    }
   }
 }

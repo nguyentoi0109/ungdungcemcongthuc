@@ -1,1 +1,1 @@
-const String serverUrl = 'http://192.168.88.149';
+const String serverUrl = 'http://192.168.1.52';

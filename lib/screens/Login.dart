@@ -2,9 +2,11 @@ import 'package:app/Comm/comHelper.dart';
 import 'package:app/Comm/genTextFromField.dart';
 import 'package:app/screens/Signup.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 import '../DatabaseHandler/DBHelper.dart';
+import '../DatabaseHandler/UserPreferences.dart';
 import 'HomeForm.dart';
 
 class LoginFrom extends StatefulWidget {
@@ -34,9 +36,10 @@ class _LoginFromState extends State<LoginFrom> {
     } else if (password.isEmpty) {
       alerDialog(context, "Please Enter Password");
     } else {
-      await dbHelper.getLoginUser(uid, password).then((UserData) {
+      await dbHelper.getLoginUser(uid, password).then((UserData) async {
         if (UserData != null) {
-          Navigator.pushAndRemoveUntil(
+          await UserPreferences.saveCredentials(uid, password);
+           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (_) => HomeForm()),
               (Route<dynamic> route) => false);
