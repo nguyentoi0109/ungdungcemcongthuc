@@ -7,6 +7,7 @@ import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:screen_loader/screen_loader.dart';
+import 'package:toast/toast.dart';
 
 import '../Comm/constants.dart';
 
@@ -245,7 +246,8 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                                     TextSpan(
                                         text: '${list[index].title}',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold,color: Colors.black)),
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black)),
                                   ],
                                 ),
                               ));
@@ -277,13 +279,29 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
-      _insertData();
+      if (containsLink() && containsBadWords()) {
+        _insertData();
+      } else {
+        Toast.show("Nôi dung không hợp lệ");
+      }
     } else {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => LoginFrom()),
           (Route<dynamic> route) => false);
     }
+  }
+
+  bool containsLink() {
+    RegExp linkRegex = new RegExp(
+        r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
+    return linkRegex.hasMatch(title);
+  }
+
+  bool containsBadWords() {
+    RegExp badWordsRegex =
+        new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
+    return badWordsRegex.hasMatch(title);
   }
 
   _insertData() async {
