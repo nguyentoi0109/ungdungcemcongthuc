@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:app/DatabaseHandler/UserPreferences.dart';
+import 'package:app/Model/CommentModel.dart';
 import 'package:app/Model/Product.dart';
 import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
-import 'package:mysql1/mysql1.dart';
+import 'package:http/http.dart' as http;
+import 'package:screen_loader/screen_loader.dart';
 
 import '../Comm/constants.dart';
 
@@ -15,19 +19,47 @@ class DetailForm extends StatefulWidget {
   State<DetailForm> createState() => _DetailFormState();
 }
 
-class _DetailFormState extends State<DetailForm> {
-  final title = TextEditingController();
+class _DetailFormState extends State<DetailForm> with ScreenLoader {
+  String title = "";
+  List<CommentModel> list = [];
+  int page = 0;
+  final ScrollController _controller = ScrollController();
+  bool isLoading1 = true;
+  bool canLoadingMore = true;
+  static const double _endReachedThreshold = 200;
+  static const int _itemsPerPage = 20;
 
-  Future<MySqlConnection> _openConnection() async {
-    final conn = await MySqlConnection.connect(
-      ConnectionSettings(
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        db: 'databanhang',
-      ),
-    );
-    return conn;
+  Future getDataByType() async {
+    isLoading1 = true;
+    var url = serverUrl + "/banhang/getAllComment.php";
+    // var res = await http.get(Uri.parse(url));
+    var res = await this.performFuture(() => http.get(Uri.parse(url)));
+    // print(res.body);
+    if (res.statusCode == 200) {
+      Iterable l = json.decode(res.body);
+      List<CommentModel> posts = List<CommentModel>.from(
+          l.map((model) => CommentModel.fromJson(model)));
+      setState(() {
+        list.addAll(posts);
+        page++;
+        canLoadingMore = posts.length >= _itemsPerPage;
+        isLoading1 = false;
+      });
+    }
+  }
+
+  Future<void> _refresh() async {
+    canLoadingMore = true;
+    list.clear();
+    page = 0;
+    await getDataByType();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // _controller.addListener(_onScroll);
+    getDataByType();
   }
 
   @override
@@ -200,9 +232,33 @@ class _DetailFormState extends State<DetailForm> {
                             style: TextStyle(fontSize: 25),
                           )),
                     ),
+                    SizedBox(
+                      height: 200,
+                      child: ListView.builder(
+                        itemCount: list.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                              title: Text('user${list[index].username}'),
+                              subtitle: RichText(
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: '${list[index].title}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,color: Colors.black)),
+                                  ],
+                                ),
+                              ));
+                        },
+                      ),
+                    ),
                     Container(
                       child: TextField(
-                        controller: title,
+                        onChanged: (String value) {
+                          setState(() {
+                            title = value;
+                          });
+                        },
                         decoration: InputDecoration(hintText: "Viết bình luận"),
                       ),
                     )
@@ -211,31 +267,28 @@ class _DetailFormState extends State<DetailForm> {
                 ElevatedButton(
                   onPressed: checkLogin,
                   child: Text('Đăng bình luận'),
-                )
+                ),
               ],
             ),
           )),
         ));
   }
 
-  Future<void> checkLogin() async {
+  checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
-      final comment = title.text.trim();
-      if (comment.isNotEmpty) {
-        final conn = await _openConnection();
-        await conn.query(
-          'INSERT INTO binhluan (title) VALUES (?)',
-          [comment],
-        );
-        await conn.close();
-        title.clear();
-      }
+      _insertData();
     } else {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => LoginFrom()),
           (Route<dynamic> route) => false);
     }
+  }
+
+  _insertData() async {
+    String uname = await UserPreferences.getUname();
+    String url = serverUrl + "/banhang/insertData.php";
+    await http.post(Uri.parse(url), body: {"title": title, "u_name": uname});
   }
 }
