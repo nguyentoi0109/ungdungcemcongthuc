@@ -1,9 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class UserPreferences {
-  static const String _keyUsername = 'username';
-  static const String _keyPassword = 'password';
+  static String _keyUsername = 'username';
+  static String _keyPassword = 'password';
 
   static Future<void> saveCredentials(String username, String password) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -22,9 +21,15 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.containsKey(_keyUsername) && prefs.containsKey(_keyPassword);
   }
+
   static Future<void> removeCredentials() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(_keyUsername); // Xóa giá trị username
     prefs.remove(_keyPassword); // Xóa giá trị password
+  }
+
+  static Future<String> getUname() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_keyUsername) ?? '';
   }
 }
