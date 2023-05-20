@@ -279,7 +279,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
-      if (containsLink() && containsBadWords()) {
+      if (!containsLinkOrBadWords()) {
         _insertData();
       } else {
         Toast.show("Nôi dung không hợp lệ");
@@ -292,16 +292,13 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     }
   }
 
-  bool containsLink() {
+  bool containsLinkOrBadWords(String text) {
     RegExp linkRegex = new RegExp(
         r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
-    return linkRegex.hasMatch(title);
-  }
-
-  bool containsBadWords() {
     RegExp badWordsRegex =
         new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
-    return badWordsRegex.hasMatch(title);
+
+    return linkRegex.hasMatch(text) || badWordsRegex.hasMatch(text);
   }
 
   _insertData() async {
