@@ -22,6 +22,10 @@ class DataManager {
 
   Future<File> get _localFile async {
     final path = await _localPath;
+    final file = File('$path/favProduct.txt');
+    if (!file.existsSync()) {
+      file.createSync(recursive: true);
+    }
     return File('$path/favProduct.txt');
   }
 
@@ -40,6 +44,7 @@ class DataManager {
   }
 
   Future<void> loadFavProducts() async {
+
     favProducts = <Product>[];
     try {
       // print("bat dau load");
