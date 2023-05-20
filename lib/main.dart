@@ -3,13 +3,13 @@ import 'package:app/screens/HomeForm.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_loader/screen_loader.dart';
 
-void main() {
+Future<void> main() async {
   configScreenLoader(
     loader: AlertDialog(
       title: Text('Loading..'),
     ),
     bgBlur: 80.0,
-  );
+  ); 
   runApp(const MyApp());
 }
 
