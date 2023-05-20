@@ -9,7 +9,6 @@ import '../Comm/constants.dart';
 import '../Model/CategoryModel.dart';
 import 'ProductForm.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -21,6 +20,16 @@ class _HomePageState extends State<HomePage> with ScreenLoader {
   List<CategoryModel> list = [];
 
   Future getData() async {
+    // Firebase.initializeApp();
+    // final reference = FirebaseDatabase.instance.reference().child('home');
+    // reference.once().then((flutterfire configure --project=cnpm-fa902DataSnapshot snapshot) {
+    //   final json = json.decode(snapshot.value);
+    //   List<CategoryModel> posts = List<CategoryModel>.from(
+    //       json.map((model) => CategoryModel.fromJson(model)));
+    //   setState(() {
+    //     list.addAll(posts);
+    //   });
+    // });
     var url = serverUrl + "/banhang/getData.php";
     // var res = await this.performFuture(() => http.get(Uri.parse(url)));
     var res = await http.get(Uri.parse(url));

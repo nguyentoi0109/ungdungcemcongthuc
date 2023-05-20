@@ -30,21 +30,6 @@ class _FavouitePageState extends State<FavouitePage> {
     super.initState();
     favProduct = DataManager().favProducts;
   }
-  // Future<void> _scrollLitener() async {
-  //   if (isLoadingMore) return;
-  //   if (scrollController.position.pixels ==
-  //       scrollController.position.maxScrollExtent) {
-  //     setState(() {
-  //       isLoadingMore = true;
-  //     });
-  //     page = page + 1;
-  //     await getAllData();
-  //     setState(() {
-  //       isLoadingMore = false;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
