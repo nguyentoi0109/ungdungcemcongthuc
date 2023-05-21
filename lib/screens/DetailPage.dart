@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app/DatabaseHandler/UserPreferences.dart';
 import 'package:app/Model/CommentModel.dart';
+import 'package:app/Model/DetailModel.dart';
 import 'package:app/Model/Product.dart';
 import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   bool canLoadingMore = true;
   static const double _endReachedThreshold = 200;
   static const int _itemsPerPage = 20;
+  List<DetailModel> detail = [];
 
   Future getDataByType() async {
     isLoading1 = true;
@@ -49,6 +51,21 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     }
   }
 
+  Future getDetail() async {
+    var url = serverUrl + "/banhang/getAllDetail.php?id=${widget.cate.id}";
+    // var res = await http.get(Uri.parse(url));
+    var res = await this.performFuture(() => http.get(Uri.parse(url)));
+    // print(res.body);
+    if (res.statusCode == 200) {
+      Iterable l = json.decode(res.body);
+      List<DetailModel> posts =
+          List<DetailModel>.from(l.map((model) => DetailModel.fromJson(model)));
+      setState(() {
+        detail.addAll(posts);
+      });
+    }
+  }
+
   Future<void> _refresh() async {
     canLoadingMore = true;
     list.clear();
@@ -61,6 +78,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     super.initState();
     // _controller.addListener(_onScroll);
     getDataByType();
+    getDetail();
   }
 
   @override
@@ -81,7 +99,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Ten san pham',
+                      '${detail[0].name}',
                       style: TextStyle(
                         fontSize: 30,
                       ),
@@ -89,20 +107,20 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                     ),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    child: Container(
-                      height: 150.0,
-                      width: 300.0,
-                      child: Image.asset(
-                        'assets/images/img.png',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   margin: EdgeInsets.only(top: 10),
+                //   child: ClipRRect(
+                //     borderRadius: BorderRadius.all(Radius.circular(5)),
+                //     child: Container(
+                //       height: 150.0,
+                //       width: 300.0,
+                //       child: Image.asset(
+                //         'assets/images/img.png',
+                //         fit: BoxFit.cover,
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Container(
                   padding: EdgeInsets.all(5),
                   margin: EdgeInsets.only(top: 10),
@@ -122,13 +140,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '10 hoa đậu biếc khô' +
-                          '\n'
-                              '400 gạo nếp' +
-                          '\n'
-                              'Dừa nạo Đường' +
-                          '\n'
-                              'Đậu phộng Mè trắng',
+                      '${detail[0].nguyenlieu}',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -146,83 +158,75 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                     ),
                   ),
                 ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       'Bước 1:',
+                //       style:
+                //           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                //     ),
+                //   ),
+                // ),
                 Container(
                   padding: EdgeInsets.all(5),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      'Bước 1:',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '- Hoa đậu biếc khô bạn đem ngâm cùng nước sôi, trong khoảng 5 – 7 phút cho hoa ra hết màu. Sau đó, bạn vớt hoa ra và lấy phần nước màu xanh tím.' +
-                          '\n'
-                              '- Gạo nếp bạn đem vo sạch để ráo. Tiếp theo, bạn cho gạo nếp vào ngâm ngập trong nước hoa đậu biếc ít nhất từ 6 7 tiếng hoặc tốt nhất bạn nên ngâm qua đêm. Sau khi ngâm xong, bạn vớt gạo ra, cho ít muối vào rồi trộn đều lên, để gạo nghỉ 5 phút.' +
-                          '\n'
-                              '- Mè trắng bạn đem rang vàng rồi cho ra chén.' +
-                          '\n'
-                              '- Đậu phộng bạn đem rửa với nước, rồi để ráo. Sau đó, cho vào chảo rang vàng. Khi rang xong, bạn cho đậu ra , chà xát cho sạch vỏ rồi giã nhỏ đậu phộng cho vào chén.' +
-                          '\n'
-                              '- Dừa nào bạn cho ra thau, cho nước ấm vào nhào rồi vắt lấy nước cốt.',
+                      '${detail[0].mota}',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Bước 2:',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '- Bạn cho nước vào nồi hấp rồi cho gạo đã ngấm vào xửng hấp, đặt nồi hấp lên bếp đun sôi nước. Bạn cho đường cùng một nửa nước cốt dừa vào xôi khi nước trong nồi hấp sôi lên khoảng 5 phút, đảo đều tay cho xôi ngấm.' +
-                          '\n'
-                              '- Hấp thêm khoảng 10 phút nữa thì bạn cho tiếp một nửa phần nước dừa vào, trộn đều. Tiếp theo, bạn đậy kín nắp nồi cho xôi chín. Khi xôi mềm dẻo không còn lõi ở giữa là đã chín rồi đấy!'
-                              '\n',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Bước 3:',
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '- Khi xôi chín, bạn cho xôi ra đĩa. Rắc ít mè rang lên trên. Đậu phộng và vừng bạn đem giã nhỏ rồi làm muối vừng để ăn kèm với xôi hoa đậu biếc. Hoặc bạn cũng có thể ăn kèm xôi hoa đậu biếc với ruốc, chả đều được.'
-                      '\n'
-                      '- Món xôi hoa đậu biếc khi hoàn thành có màu xanh đẹp mắt, thơm lừng hương nếp và có vị beo béo của nước cốt dừa. Cách làm món xôi này cũng đơn giản đúng không nào. Vậy còn chần chừ gì mà không bắt tay vào chế biến ngay để chiêu đãi cho cả gia đình thân yêu nào! Chúc bạn thành công.'
-                      '\n',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       'Bước 2:',
+                //       style:
+                //           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                //     ),
+                //   ),
+                // ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       '- Bạn cho nước vào nồi hấp rồi cho gạo đã ngấm vào xửng hấp, đặt nồi hấp lên bếp đun sôi nước. Bạn cho đường cùng một nửa nước cốt dừa vào xôi khi nước trong nồi hấp sôi lên khoảng 5 phút, đảo đều tay cho xôi ngấm.' +
+                //           '\n'
+                //               '- Hấp thêm khoảng 10 phút nữa thì bạn cho tiếp một nửa phần nước dừa vào, trộn đều. Tiếp theo, bạn đậy kín nắp nồi cho xôi chín. Khi xôi mềm dẻo không còn lõi ở giữa là đã chín rồi đấy!'
+                //               '\n',
+                //       style: TextStyle(fontSize: 20),
+                //     ),
+                //   ),
+                // ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       'Bước 3:',
+                //       style:
+                //           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                //     ),
+                //   ),
+                // ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   child: Align(
+                //     alignment: Alignment.centerLeft,
+                //     child: Text(
+                //       '- Khi xôi chín, bạn cho xôi ra đĩa. Rắc ít mè rang lên trên. Đậu phộng và vừng bạn đem giã nhỏ rồi làm muối vừng để ăn kèm với xôi hoa đậu biếc. Hoặc bạn cũng có thể ăn kèm xôi hoa đậu biếc với ruốc, chả đều được.'
+                //       '\n'
+                //       '- Món xôi hoa đậu biếc khi hoàn thành có màu xanh đẹp mắt, thơm lừng hương nếp và có vị beo béo của nước cốt dừa. Cách làm món xôi này cũng đơn giản đúng không nào. Vậy còn chần chừ gì mà không bắt tay vào chế biến ngay để chiêu đãi cho cả gia đình thân yêu nào! Chúc bạn thành công.'
+                //       '\n',
+                //       style: TextStyle(fontSize: 20),
+                //     ),
+                //   ),
+                // ),
                 Column(
                   children: [
                     Container(
@@ -279,11 +283,13 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
-      if (!containsLinkOrBadWords()) {
+      //   if (containsLink() && containsBadWords()) {
+      setState(() {
         _insertData();
-      } else {
-        Toast.show("Nôi dung không hợp lệ");
-      }
+      });
+      // } else {
+      //   Toast.show("Nôi dung không hợp lệ");
+      // }
     } else {
       Navigator.pushAndRemoveUntil(
           context,
@@ -292,13 +298,16 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     }
   }
 
-  bool containsLinkOrBadWords(String text) {
+  bool containsLink() {
     RegExp linkRegex = new RegExp(
         r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
+    return linkRegex.hasMatch(title);
+  }
+
+  bool containsBadWords() {
     RegExp badWordsRegex =
         new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
-
-    return linkRegex.hasMatch(text) || badWordsRegex.hasMatch(text);
+    return badWordsRegex.hasMatch(title);
   }
 
   _insertData() async {
