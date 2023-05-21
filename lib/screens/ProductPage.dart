@@ -1,12 +1,8 @@
-import 'dart:convert';
-
+import 'package:app/Model/ProductModel.dart';
 import 'package:app/screens/DetailPage.dart';
 import 'package:app/screens/ProductWidget.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
-import '../Comm/constants.dart';
-import '../Model/Product.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({Key? key}) : super(key: key);
@@ -16,21 +12,49 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  List<Product> list = [];
+  List<ProductModel> list = [];
   final scrollController = ScrollController();
   int page = 0;
   bool isLoadingMore = false;
 
   Future<void> getDataByType() async {
-    var url = serverUrl + "/banhang/getAllData.php?page=$page";
-    var res = await http.get(Uri.parse(url));
-    if (res.statusCode == 200) {
-      Iterable l = json.decode(res.body);
-      List<Product> posts =
-          List<Product>.from(l.map((model) => Product.fromJson(model)));
-      setState(() {
-        list.addAll(posts);
-      });
+    final int pageSize = 20;
+    final int startAt = (2 - 1) * pageSize;
+    final int endAt = startAt + pageSize;
+    print(52);
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    final recipeRef = ref.child('recipe').orderByChild('id').startAt(startAt).endAt(endAt);
+    final snapshot = await recipeRef.get();print(snapshot.value);
+
+    if (snapshot.value != null) {
+      print(snapshot.value);
+      if (snapshot.value is Map) {
+        Map<dynamic, dynamic> snapshotMap =
+            snapshot.value as Map<dynamic, dynamic>;
+        List<ProductModel> products = [];
+        snapshotMap.entries.forEach((entry) {
+          int id = int.tryParse(entry.key.toString()) ?? 0;
+          String tensp = entry.value['tensp'] as String;
+          String hinhanh = entry.value['hinhanh'] as String;
+          String mota = entry.value['mota'] as String;
+          int loai = int.tryParse(entry.value['loai'].toString()) ?? 0;
+
+          // Tạo đối tượng ProductModel từ các thông tin chi tiết
+          ProductModel product = ProductModel(id, tensp, hinhanh, mota, loai);
+          print(product.toString());
+          // Thêm sản phẩm vào danh sách
+          products.add(product);
+        });
+
+        setState(() {
+          // Thêm dữ liệu mới vào danh sách
+          list.addAll(products);
+        });
+      } else {
+        print('Not a map.');
+      }
+    } else {
+      print('No data available.');
     }
   }
 
@@ -61,7 +85,7 @@ class _ProductPageState extends State<ProductPage> {
     return Scaffold(
       body: Column(
         children: [
-          Autocomplete<Product>(
+          Autocomplete<ProductModel>(
             optionsBuilder: (TextEditingValue textValue) {
               if (textValue.text.isEmpty) {
                 return List.empty();
@@ -72,7 +96,7 @@ class _ProductPageState extends State<ProductPage> {
                       .contains(textValue.text.toLowerCase()))
                   .toList();
             },
-            displayStringForOption: (Product p) => p.tensp,
+            displayStringForOption: (ProductModel p) => p.tensp,
             fieldViewBuilder:
                 (context, textEditingController, focusNode, onFieldSubmitted) =>
                     Padding(
@@ -90,7 +114,7 @@ class _ProductPageState extends State<ProductPage> {
               ),
             ),
             optionsViewBuilder: (BuildContext context, Function onSelected,
-                Iterable<Product> list) {
+                Iterable<ProductModel> list) {
               return Material(
                 child: Expanded(
                   child: ListView.builder(
@@ -102,7 +126,6 @@ class _ProductPageState extends State<ProductPage> {
                           return InkWell(
                             child: ProductWidget(product: product),
                           );
-                          // ProductWidget(product: product);
                         } else {
                           return Center(
                             child: CircularProgressIndicator(),

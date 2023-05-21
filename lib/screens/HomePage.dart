@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -20,27 +21,18 @@ class _HomePageState extends State<HomePage> with ScreenLoader {
   List<CategoryModel> list = [];
 
   Future getData() async {
-    // Firebase.initializeApp();
-    // final reference = FirebaseDatabase.instance.reference().child('home');
-    // reference.once().then((flutterfire configure --project=cnpm-fa902DataSnapshot snapshot) {
-    //   final json = json.decode(snapshot.value);
-    //   List<CategoryModel> posts = List<CategoryModel>.from(
-    //       json.map((model) => CategoryModel.fromJson(model)));
-    //   setState(() {
-    //     list.addAll(posts);
-    //   });
-    // });
-    var url = serverUrl + "/banhang/getData.php";
-    // var res = await this.performFuture(() => http.get(Uri.parse(url)));
-    var res = await http.get(Uri.parse(url));
-    // print(res.body);
-    if (res.statusCode == 200) {
-      Iterable l = json.decode(res.body);
-      List<CategoryModel> posts = List<CategoryModel>.from(
-          l.map((model) => CategoryModel.fromJson(model)));
-      setState(() {
-        list.addAll(posts);
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('home').get();
+    if (snapshot.exists) {
+      print(snapshot.value);
+      List<CategoryModel> categories = (snapshot.value as List<dynamic>)
+          .map((dynamic item) => CategoryModel.fromJson(item))
+          .toList();
+      setState(() { // add the new data to the list
+        list.addAll(categories);
       });
+    } else {
+      print('No data available.');
     }
   }
 

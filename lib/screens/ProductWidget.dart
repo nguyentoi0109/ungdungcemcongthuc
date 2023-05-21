@@ -1,11 +1,12 @@
-import 'package:app/Model/Product.dart';
+
 import 'package:favorite_button/favorite_button.dart';
 import 'package:flutter/material.dart';
 
 import '../DatabaseHandler/DataManager.dart';
+import '../Model/ProductModel.dart';
 
 class ProductWidget extends StatefulWidget {
-  final Product product;
+  final ProductModel product;
 
   const ProductWidget({Key? key, required this.product}) : super(key: key);
 

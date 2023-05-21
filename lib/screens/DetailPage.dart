@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:app/DatabaseHandler/UserPreferences.dart';
 import 'package:app/Model/CommentModel.dart';
-import 'package:app/Model/Product.dart';
 import 'package:app/screens/Login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,9 +9,10 @@ import 'package:screen_loader/screen_loader.dart';
 import 'package:toast/toast.dart';
 
 import '../Comm/constants.dart';
+import '../Model/ProductModel.dart';
 
 class DetailForm extends StatefulWidget {
-  Product cate;
+  ProductModel cate;
 
   DetailForm({Key? key, required this.cate}) : super(key: key);
 
@@ -76,9 +76,9 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.all(5),
-                  margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Ten san pham',
@@ -106,7 +106,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 Container(
                   padding: EdgeInsets.all(5),
                   margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Nguyên liệu',
@@ -119,25 +119,19 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 Container(
                   padding: EdgeInsets.all(5),
                   margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '10 hoa đậu biếc khô' +
-                          '\n'
-                              '400 gạo nếp' +
-                          '\n'
-                              'Dừa nạo Đường' +
-                          '\n'
-                              'Đậu phộng Mè trắng',
+                      '10 hoa đậu biếc khô\n400 gạo nếp\nDừa nạo Đường\nĐậu phộng Mè trắng',
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(5),
-                  margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Các bước làm',
@@ -147,8 +141,8 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Bước 1:',
@@ -158,26 +152,18 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      '- Hoa đậu biếc khô bạn đem ngâm cùng nước sôi, trong khoảng 5 – 7 phút cho hoa ra hết màu. Sau đó, bạn vớt hoa ra và lấy phần nước màu xanh tím.' +
-                          '\n'
-                              '- Gạo nếp bạn đem vo sạch để ráo. Tiếp theo, bạn cho gạo nếp vào ngâm ngập trong nước hoa đậu biếc ít nhất từ 6 7 tiếng hoặc tốt nhất bạn nên ngâm qua đêm. Sau khi ngâm xong, bạn vớt gạo ra, cho ít muối vào rồi trộn đều lên, để gạo nghỉ 5 phút.' +
-                          '\n'
-                              '- Mè trắng bạn đem rang vàng rồi cho ra chén.' +
-                          '\n'
-                              '- Đậu phộng bạn đem rửa với nước, rồi để ráo. Sau đó, cho vào chảo rang vàng. Khi rang xong, bạn cho đậu ra , chà xát cho sạch vỏ rồi giã nhỏ đậu phộng cho vào chén.' +
-                          '\n'
-                              '- Dừa nào bạn cho ra thau, cho nước ấm vào nhào rồi vắt lấy nước cốt.',
+                      '- Hoa đậu biếc khô bạn đem ngâm cùng nước sôi, trong khoảng 5 – 7 phút cho hoa ra hết màu. Sau đó, bạn vớt hoa ra và lấy phần nước màu xanh tím.\n- Gạo nếp bạn đem vo sạch để ráo. Tiếp theo, bạn cho gạo nếp vào ngâm ngập trong nước hoa đậu biếc ít nhất từ 6 7 tiếng hoặc tốt nhất bạn nên ngâm qua đêm. Sau khi ngâm xong, bạn vớt gạo ra, cho ít muối vào rồi trộn đều lên, để gạo nghỉ 5 phút.\n- Mè trắng bạn đem rang vàng rồi cho ra chén.\n- Đậu phộng bạn đem rửa với nước, rồi để ráo. Sau đó, cho vào chảo rang vàng. Khi rang xong, bạn cho đậu ra , chà xát cho sạch vỏ rồi giã nhỏ đậu phộng cho vào chén.\n- Dừa nào bạn cho ra thau, cho nước ấm vào nhào rồi vắt lấy nước cốt.',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Bước 2:',
@@ -188,7 +174,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       '- Bạn cho nước vào nồi hấp rồi cho gạo đã ngấm vào xửng hấp, đặt nồi hấp lên bếp đun sôi nước. Bạn cho đường cùng một nửa nước cốt dừa vào xôi khi nước trong nồi hấp sôi lên khoảng 5 phút, đảo đều tay cho xôi ngấm.' +
@@ -201,7 +187,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Bước 3:',
@@ -212,7 +198,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 ),
                 Container(
                   padding: EdgeInsets.all(5),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       '- Khi xôi chín, bạn cho xôi ra đĩa. Rắc ít mè rang lên trên. Đậu phộng và vừng bạn đem giã nhỏ rồi làm muối vừng để ăn kèm với xôi hoa đậu biếc. Hoặc bạn cũng có thể ăn kèm xôi hoa đậu biếc với ruốc, chả đều được.'
@@ -226,7 +212,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 Column(
                   children: [
                     Container(
-                      child: Align(
+                      child: const Align(
                           alignment: Alignment.topLeft,
                           child: Text(
                             "Bình luận: ",
@@ -245,7 +231,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                                   children: <TextSpan>[
                                     TextSpan(
                                         text: '${list[index].title}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black)),
                                   ],
@@ -254,21 +240,19 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                         },
                       ),
                     ),
-                    Container(
-                      child: TextField(
-                        onChanged: (String value) {
-                          setState(() {
-                            title = value;
-                          });
-                        },
-                        decoration: InputDecoration(hintText: "Viết bình luận"),
-                      ),
+                    TextField(
+                      onChanged: (String value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      decoration: const InputDecoration(hintText: "Viết bình luận"),
                     )
                   ],
                 ),
                 ElevatedButton(
                   onPressed: checkLogin,
-                  child: Text('Đăng bình luận'),
+                  child: const Text('Đăng bình luận'),
                 ),
               ],
             ),
@@ -279,7 +263,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
-      if (!containsLinkOrBadWords()) {
+      if (!containsLinkOrBadWords("")) {
         _insertData();
       } else {
         Toast.show("Nôi dung không hợp lệ");
@@ -293,17 +277,17 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   }
 
   bool containsLinkOrBadWords(String text) {
-    RegExp linkRegex = new RegExp(
+    RegExp linkRegex = RegExp(
         r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
     RegExp badWordsRegex =
-        new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
+        RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
 
     return linkRegex.hasMatch(text) || badWordsRegex.hasMatch(text);
   }
 
   _insertData() async {
     String uname = await UserPreferences.getUname();
-    String url = serverUrl + "/banhang/insertData.php";
+    String url = "$serverUrl/banhang/insertData.php";
     await http.post(Uri.parse(url), body: {"title": title, "u_name": uname});
   }
 }

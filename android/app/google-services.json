@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "509259599286",
+    "firebase_url": "https://cnpm-fa902-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cnpm-fa902",
+    "storage_bucket": "cnpm-fa902.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:509259599286:android:fe7bcf3fce81d020a6c517",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "509259599286-9ouimg27oc5b4gne8gf289obtn74941e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwZaLsonq7FrSSdK-WITV1qzXO1WSyCYU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "509259599286-9ouimg27oc5b4gne8gf289obtn74941e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,14 +5,17 @@ class CategoryModel {
 
   CategoryModel(this.id, this.name, this.image);
 
-  CategoryModel.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        image = json['image'],
-        id = int.parse(json['id']);
+  factory CategoryModel.fromJson(dynamic json) {
+    return CategoryModel(
+      int.tryParse(json['id'].toString())!,
+      json['name'] as String,
+      json['image'] as String,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-    'name': name,
-    'image': image,
-    'id': id,
-  };
+        'name': name,
+        'image': image,
+        'id': id,
+      };
 }

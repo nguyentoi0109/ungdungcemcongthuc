@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../Comm/constants.dart';
 import '../DatabaseHandler/DataManager.dart';
-import '../Model/Product.dart';
+import '../Model/ProductModel.dart';
 import 'DetailPage.dart';
 import 'ProductWidget.dart';
 
@@ -19,7 +19,7 @@ class FavouitePage extends StatefulWidget {
 }
 
 class _FavouitePageState extends State<FavouitePage> {
-  List<Product> favProduct = [];
+  List<ProductModel> favProduct = [];
   final scrollController = ScrollController();
   int page = 0;
   bool isLoadingMore = false;

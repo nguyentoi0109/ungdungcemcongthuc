@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,31 +9,7 @@ import 'package:screen_loader/screen_loader.dart';
 
 import '../Comm/constants.dart';
 import '../Model/CategoryModel.dart';
-
-class ProductModel {
-  int id;
-  String tensp;
-  String hinhanh;
-  String mota;
-  int loai;
-
-  ProductModel(this.id, this.tensp, this.hinhanh, this.mota, this.loai);
-
-  ProductModel.fromJson(Map<String, dynamic> json)
-      : id = int.parse(json['id']),
-        tensp = json['tensp'],
-        hinhanh = json['hinhanh'],
-        mota = json['mota'],
-        loai = int.parse(json['loai']);
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'tensp': tensp,
-        'hinhanh': hinhanh,
-        'mota': mota,
-        'loai': loai,
-      };
-}
+import '../Model/ProductModel.dart';
 
 class ProductForm extends StatefulWidget {
   final CategoryModel cate;
@@ -44,7 +22,7 @@ class ProductForm extends StatefulWidget {
 
 class _ProductFormState extends State<ProductForm> with ScreenLoader {
   List<ProductModel> list = [];
-  int page = 0;
+  int page = 1;
   final ScrollController _controller = ScrollController();
   bool isLoading1 = true;
   bool canLoadingMore = true;
@@ -52,23 +30,49 @@ class _ProductFormState extends State<ProductForm> with ScreenLoader {
   static const int _itemsPerPage = 20;
 
   Future getDataByType() async {
-    print('loading page $page');
+    // print('loading page $page');
+    print('${widget.cate.id}');
+    int cate_id = int.tryParse('${widget.cate.id}')!;
     isLoading1 = true;
-    var url = serverUrl +
-        "/banhang/getDataType.php?loai=${widget.cate.id}&page=$page";
-    // var res = await http.get(Uri.parse(url));
-    var res = await this.performFuture(() => http.get(Uri.parse(url)));
-    // print(res.body);
-    if (res.statusCode == 200) {
-      Iterable l = json.decode(res.body);
-      List<ProductModel> posts = List<ProductModel>.from(
-          l.map((model) => ProductModel.fromJson(model)));
-      setState(() {
-        list.addAll(posts);
-        page++;
-        canLoadingMore = posts.length >= _itemsPerPage;
-        isLoading1 = false;
-      });
+
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    final recipeRef = ref.child('recipe').orderByChild('loai').equalTo(cate_id);
+    final snapshot = await recipeRef.get();
+    if (snapshot.value != null) {
+      print(snapshot.value);
+      if (snapshot.value is Map) {
+        Map<dynamic, dynamic> snapshotMap =
+            snapshot.value as Map<dynamic, dynamic>;
+
+        List<ProductModel> products = [];
+
+        // Lặp qua từng entry của Map
+        snapshotMap.entries.forEach((entry) {
+          int id = int.tryParse(entry.key.toString()) ?? 0;
+          String tensp = entry.value['tensp'] as String;
+          String hinhanh = entry.value['hinhanh'] as String;
+          String mota = entry.value['mota'] as String;
+          int loai = int.tryParse(entry.value['loai'].toString()) ?? 0;
+
+          // Tạo đối tượng ProductModel từ các thông tin chi tiết
+          ProductModel product = ProductModel(id, tensp, hinhanh, mota, loai);
+          print(product.toString());
+          // Thêm sản phẩm vào danh sách
+          products.add(product);
+        });
+
+        setState(() {
+          // Thêm dữ liệu mới vào danh sách
+          list.addAll(products);
+          page++;
+          canLoadingMore = products.length >= _itemsPerPage;
+          isLoading1 = false;
+        });
+      } else {
+        print('Not a map.');
+      }
+    } else {
+      print('No data available.');
     }
   }
 
