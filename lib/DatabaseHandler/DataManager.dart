@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:app/Model/Product.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../Model/ProductModel.dart';
 
 class DataManager {
   static final DataManager _singleton = DataManager._internal();
@@ -13,7 +14,7 @@ class DataManager {
 
   DataManager._internal();
 
-  late List<Product> favProducts;
+  late List<ProductModel> favProducts;
 
   Future<String> get _localPath async {
     final directory = await getApplicationDocumentsDirectory();
@@ -45,7 +46,7 @@ class DataManager {
 
   Future<void> loadFavProducts() async {
 
-    favProducts = <Product>[];
+    favProducts = <ProductModel>[];
     try {
       // print("bat dau load");
       final file = await _localFile;
@@ -55,8 +56,8 @@ class DataManager {
 
 
       Iterable l = json.decode(contents);
-      List<Product> posts =
-          List<Product>.from(l.map((model) => Product.fromJson(model)));
+      List<ProductModel> posts =
+          List<ProductModel>.from(l.map((model) => ProductModel.fromJson(model)));
       favProducts.addAll(posts);
       // print("load thanh cong ${favProducts.length}");
     } catch (e) {
@@ -74,7 +75,7 @@ class DataManager {
     // print('removeFavourite $favProducts');
   }
 
-  Future<void> addFavourite(Product p) async {
+  Future<void> addFavourite(ProductModel p) async {
     if (!checkFavourite(p.id)) {
       favProducts.add(p);
       await saveFavProducts();

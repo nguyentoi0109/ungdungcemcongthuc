@@ -2,14 +2,19 @@ import 'package:app/DatabaseHandler/DataManager.dart';
 import 'package:app/screens/HomeForm.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_loader/screen_loader.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 Future<void> main() async {
   configScreenLoader(
     loader: AlertDialog(
       title: Text('Loading..'),
     ),
     bgBlur: 80.0,
-  ); 
+  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

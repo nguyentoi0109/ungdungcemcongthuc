@@ -11,9 +11,10 @@ import 'package:screen_loader/screen_loader.dart';
 import 'package:toast/toast.dart';
 
 import '../Comm/constants.dart';
+import '../Model/ProductModel.dart';
 
 class DetailForm extends StatefulWidget {
-  Product cate;
+  ProductModel cate;
 
   DetailForm({Key? key, required this.cate}) : super(key: key);
 
@@ -94,9 +95,9 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
             child: Column(
               children: [
                 Container(
-                  padding: EdgeInsets.all(5),
-                  margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       '${detail[0].name}',
@@ -124,7 +125,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 Container(
                   padding: EdgeInsets.all(5),
                   margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Nguyên liệu',
@@ -137,19 +138,21 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 Container(
                   padding: EdgeInsets.all(5),
                   margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
+
                       '${detail[0].nguyenlieu}',
+
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(5),
-                  margin: EdgeInsets.only(top: 10),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  margin: const EdgeInsets.only(top: 10),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'Các bước làm',
@@ -170,67 +173,22 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                 //   ),
                 // ),
                 Container(
-                  padding: EdgeInsets.all(5),
-                  child: Align(
+                  padding: const EdgeInsets.all(5),
+                  child: const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
+
                       '${detail[0].mota}',
+
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
-                // Container(
-                //   padding: EdgeInsets.all(5),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text(
-                //       'Bước 2:',
-                //       style:
-                //           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   padding: EdgeInsets.all(5),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text(
-                //       '- Bạn cho nước vào nồi hấp rồi cho gạo đã ngấm vào xửng hấp, đặt nồi hấp lên bếp đun sôi nước. Bạn cho đường cùng một nửa nước cốt dừa vào xôi khi nước trong nồi hấp sôi lên khoảng 5 phút, đảo đều tay cho xôi ngấm.' +
-                //           '\n'
-                //               '- Hấp thêm khoảng 10 phút nữa thì bạn cho tiếp một nửa phần nước dừa vào, trộn đều. Tiếp theo, bạn đậy kín nắp nồi cho xôi chín. Khi xôi mềm dẻo không còn lõi ở giữa là đã chín rồi đấy!'
-                //               '\n',
-                //       style: TextStyle(fontSize: 20),
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   padding: EdgeInsets.all(5),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text(
-                //       'Bước 3:',
-                //       style:
-                //           TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                //     ),
-                //   ),
-                // ),
-                // Container(
-                //   padding: EdgeInsets.all(5),
-                //   child: Align(
-                //     alignment: Alignment.centerLeft,
-                //     child: Text(
-                //       '- Khi xôi chín, bạn cho xôi ra đĩa. Rắc ít mè rang lên trên. Đậu phộng và vừng bạn đem giã nhỏ rồi làm muối vừng để ăn kèm với xôi hoa đậu biếc. Hoặc bạn cũng có thể ăn kèm xôi hoa đậu biếc với ruốc, chả đều được.'
-                //       '\n'
-                //       '- Món xôi hoa đậu biếc khi hoàn thành có màu xanh đẹp mắt, thơm lừng hương nếp và có vị beo béo của nước cốt dừa. Cách làm món xôi này cũng đơn giản đúng không nào. Vậy còn chần chừ gì mà không bắt tay vào chế biến ngay để chiêu đãi cho cả gia đình thân yêu nào! Chúc bạn thành công.'
-                //       '\n',
-                //       style: TextStyle(fontSize: 20),
-                //     ),
-                //   ),
-                // ),
+               
                 Column(
                   children: [
                     Container(
-                      child: Align(
+                      child: const Align(
                           alignment: Alignment.topLeft,
                           child: Text(
                             "Bình luận: ",
@@ -249,7 +207,7 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                                   children: <TextSpan>[
                                     TextSpan(
                                         text: '${list[index].title}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             color: Colors.black)),
                                   ],
@@ -258,21 +216,19 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
                         },
                       ),
                     ),
-                    Container(
-                      child: TextField(
-                        onChanged: (String value) {
-                          setState(() {
-                            title = value;
-                          });
-                        },
-                        decoration: InputDecoration(hintText: "Viết bình luận"),
-                      ),
+                    TextField(
+                      onChanged: (String value) {
+                        setState(() {
+                          title = value;
+                        });
+                      },
+                      decoration: const InputDecoration(hintText: "Viết bình luận"),
                     )
                   ],
                 ),
                 ElevatedButton(
                   onPressed: checkLogin,
-                  child: Text('Đăng bình luận'),
+                  child: const Text('Đăng bình luận'),
                 ),
               ],
             ),
@@ -283,8 +239,10 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
   checkLogin() async {
     final bool checkCredentials = await UserPreferences.checkCredentials();
     if (checkCredentials) {
+
       //   if (containsLink() && containsBadWords()) {
       setState(() {
+
         _insertData();
       });
       // } else {
@@ -298,21 +256,26 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     }
   }
 
+
+
   bool containsLink() {
     RegExp linkRegex = new RegExp(
+
         r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
     return linkRegex.hasMatch(title);
   }
 
   bool containsBadWords() {
     RegExp badWordsRegex =
+
         new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
     return badWordsRegex.hasMatch(title);
+
   }
 
   _insertData() async {
     String uname = await UserPreferences.getUname();
-    String url = serverUrl + "/banhang/insertData.php";
+    String url = "$serverUrl/banhang/insertData.php";
     await http.post(Uri.parse(url), body: {"title": title, "u_name": uname});
   }
 }
