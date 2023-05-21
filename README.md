@@ -1,4 +1,4 @@
-Hướng dẫn đóng gói và mở ứng dụng "Phần mềm xem công thức nấu ăn" trên thiết bị Android bằng Flutter
+##### Phần mềm xem công thức nấu ăn
 ----------------------------------------------------------------------------------------------------
 
 Ứng dụng "Phần mềm xem công thức nấu ăn" là một ứng dụng di động được viết bằng Flutter. Đây là hướng dẫn về cách đóng gói và mở ứng dụng trên các thiết bị Android.
