@@ -45,3 +45,4 @@ app.*.map.json
 lib/Comm/constants.dart
 *.exe
 *.exe
+app.iml

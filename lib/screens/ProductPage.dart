@@ -19,21 +19,24 @@ class _ProductPageState extends State<ProductPage> {
 
   Future<void> getDataByType() async {
     final int pageSize = 20;
-    final int startAt = (2 - 1) * pageSize;
-    final int endAt = startAt + pageSize;
-    print(52);
+    final String startAt = ((page) * pageSize).toString();
+    final String endAt = ((page) * pageSize + pageSize).toString();
+
+    print(startAt);
+    print(endAt);
     DatabaseReference ref = FirebaseDatabase.instance.ref();
-    final recipeRef = ref.child('recipe').orderByChild('id').startAt(startAt).endAt(endAt);
-    final snapshot = await recipeRef.get();print(snapshot.value);
+    final recipeRef =
+        ref.child('recipe').orderByKey().startAt(startAt).endAt(endAt);
+    final snapshot = await recipeRef.get();
 
     if (snapshot.value != null) {
       print(snapshot.value);
+      List<ProductModel> products = [];
       if (snapshot.value is Map) {
         Map<dynamic, dynamic> snapshotMap =
             snapshot.value as Map<dynamic, dynamic>;
-        List<ProductModel> products = [];
         snapshotMap.entries.forEach((entry) {
-          int id = int.tryParse(entry.key.toString()) ?? 0;
+          int id = int.tryParse(entry.value['id'].toString()) ?? 0;
           String tensp = entry.value['tensp'] as String;
           String hinhanh = entry.value['hinhanh'] as String;
           String mota = entry.value['mota'] as String;
@@ -41,7 +44,6 @@ class _ProductPageState extends State<ProductPage> {
 
           // Tạo đối tượng ProductModel từ các thông tin chi tiết
           ProductModel product = ProductModel(id, tensp, hinhanh, mota, loai);
-          print(product.toString());
           // Thêm sản phẩm vào danh sách
           products.add(product);
         });
@@ -51,7 +53,25 @@ class _ProductPageState extends State<ProductPage> {
           list.addAll(products);
         });
       } else {
-        print('Not a map.');
+        List<dynamic> values = snapshot.value as List;
+        values.forEach((entry) {
+          if (entry != null) {
+            int id = int.tryParse(entry['id'].toString()) ?? 0;
+            String tensp = entry['tensp'] as String;
+            String hinhanh = entry['hinhanh'] as String;
+            String mota = entry['mota'] as String;
+            int loai = int.tryParse(entry['loai'].toString()) ?? 0;
+
+            // Tạo đối tượng ProductModel từ các thông tin chi tiết
+            ProductModel product = ProductModel(id, tensp, hinhanh, mota, loai);
+            // Thêm sản phẩm vào danh sách
+            products.add(product);
+          }
+        });
+        setState(() {
+          // Thêm dữ liệu mới vào danh sách
+          list.addAll(products);
+        });
       }
     } else {
       print('No data available.');
@@ -86,10 +106,75 @@ class _ProductPageState extends State<ProductPage> {
       body: Column(
         children: [
           Autocomplete<ProductModel>(
-            optionsBuilder: (TextEditingValue textValue) {
+            optionsBuilder: (TextEditingValue textValue) async {
               if (textValue.text.isEmpty) {
                 return List.empty();
               }
+              String keyword = 'bánh tráng';
+              String encodedKeyword = '';
+              for (int i = 0; i < keyword.length; i++) {
+                String char = keyword[i];
+                if (char == ' ') {
+                  encodedKeyword += '20'; // Mã hóa ký tự space
+                } else if (char == 'á') {
+                  encodedKeyword += '00E1'; // Mã hóa ký tự á
+                } else if (char == 'ã') {
+                  encodedKeyword += '00E3'; // Mã hóa ký tự ã
+                } else {
+                  encodedKeyword += char.codeUnitAt(0).toRadixString(16); // Mã hóa các ký tự khác
+                }
+              }
+              String startValue = encodedKeyword;
+              String endValue = encodedKeyword + '\uf8ff';
+              DatabaseReference ref = FirebaseDatabase.instance.ref();
+              final recipeRef = ref.child('recipe').orderByChild('tensp').startAt(startValue).endAt(endValue);
+              final snapshot = await recipeRef.get();
+
+              if (snapshot.value != null) {
+                print(snapshot.value);
+                List<ProductModel> products = [];
+                if (snapshot.value is Map) {
+                  Map<dynamic, dynamic> snapshotMap =
+                      snapshot.value as Map<dynamic, dynamic>;
+                  snapshotMap.entries.forEach((entry) {
+                    int id = int.tryParse(entry.value['id'].toString()) ?? 0;
+                    String tensp = entry.value['tensp'] as String;
+                    String hinhanh = entry.value['hinhanh'] as String;
+                    String mota = entry.value['mota'] as String;
+                    int loai =
+                        int.tryParse(entry.value['loai'].toString()) ?? 0;
+
+                    // Tạo đối tượng ProductModel từ các thông tin chi tiết
+                    ProductModel product =
+                        ProductModel(id, tensp, hinhanh, mota, loai);
+                    // Thêm sản phẩm vào danh sách
+                    products.add(product);
+                  });
+
+                  return products;
+                } else {
+                  List<dynamic> values = snapshot.value as List;
+                  values.forEach((entry) {
+                    if (entry != null) {
+                      int id = int.tryParse(entry['id'].toString()) ?? 0;
+                      String tensp = entry['tensp'] as String;
+                      String hinhanh = entry['hinhanh'] as String;
+                      String mota = entry['mota'] as String;
+                      int loai = int.tryParse(entry['loai'].toString()) ?? 0;
+
+                      // Tạo đối tượng ProductModel từ các thông tin chi tiết
+                      ProductModel product =
+                          ProductModel(id, tensp, hinhanh, mota, loai);
+                      // Thêm sản phẩm vào danh sách
+                      products.add(product);
+                    }
+                  });
+                  return products;
+                }
+              } else {
+                print('No data available.');
+              }
+
               return list
                   .where((product) => product.tensp
                       .toLowerCase()
