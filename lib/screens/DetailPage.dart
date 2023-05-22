@@ -260,17 +260,17 @@ class _DetailFormState extends State<DetailForm> with ScreenLoader {
     return linkRegex.hasMatch(text) || badWordsRegex.hasMatch(text);
   }
 
-  // bool containsLink() {
-  //   RegExp linkRegex = new RegExp(
-  //       r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
-  //   return linkRegex.hasMatch(title);
-  // }
+  bool containsLink() {
+    RegExp linkRegex = new RegExp(
+        r"(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)");
+    return linkRegex.hasMatch(title);
+  }
 
-  // bool containsBadWords() {
-  //   RegExp badWordsRegex =
-  //       new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
-  //   return badWordsRegex.hasMatch(title);
-  // }
+  bool containsBadWords() {
+    RegExp badWordsRegex =
+        new RegExp(r"\b(shit|fuck|fu)\b", caseSensitive: false);
+    return badWordsRegex.hasMatch(title);
+  }
 
   _insertData() async {
     String uname = await UserPreferences.getUname();
